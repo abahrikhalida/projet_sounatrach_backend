@@ -37,6 +37,14 @@ spring:
           filters:
             - StripPrefix=0
 
+        - id: service-juridique
+          uri: lb://service-juridique
+          predicates:
+            - Path=/juridique/**
+          filters:
+            - StripPrefix=0
+
+
 eureka:
   client:
     service-url:
