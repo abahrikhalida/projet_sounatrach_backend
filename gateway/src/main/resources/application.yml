@@ -43,6 +43,12 @@ spring:
             - Path=/juridique/**
           filters:
             - StripPrefix=0
+        - id: affectation-sounatrach
+          uri: http://localhost:8011
+          predicates:
+            - Path=/affectation/**
+          filters:
+            - StripPrefix=0
 
 
 eureka:
