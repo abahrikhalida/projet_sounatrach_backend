@@ -339,148 +339,9 @@ def api_create_user(request):
         }
     }, status=201)
 
+from datetime import datetime
+from django.core.exceptions import ObjectDoesNotExist
 
-
-# @api_view(['POST'])
-# @permission_classes([IsAuthenticated])
-# def api_assign_role(request):
-#     # Cas 1: Non admin
-#     if request.user.role != 'admin':
-#         return Response({
-#             "status": "error",
-#             "code": "FORBIDDEN",
-#             "message": "Accès admin uniquement",
-#             "error_details": "Votre rôle actuel ne vous permet pas d'assigner des rôles"
-#         }, status=403)
-
-#     user_id = request.data.get('user_id')
-#     role = request.data.get('role')
-    
-#     # Champs supplémentaires pour les rôles spécifiques
-#     direction_id = request.data.get('direction_id')  # Pour responsable_departement
-#     activite_id = request.data.get('activite_id')        # Pour responsable_structure
-#     departement_id = request.data.get('departement_id')  # Pour responsable_departement (optionnel)
-
-#     # Cas 2: Champs manquants
-#     if not user_id or not role:
-#         missing_fields = []
-#         if not user_id: missing_fields.append('user_id')
-#         if not role: missing_fields.append('role')
-        
-#         return Response({
-#             "status": "error",
-#             "code": "MISSING_FIELDS",
-#             "message": "Champs obligatoires manquants",
-#             "missing_fields": missing_fields,
-#             "required_fields": ["user_id", "role"]
-#         }, status=400)
-
-#     # Validation pour responsable_departement
-#     if role == 'responsable_departement':
-#         if not direction_id:
-#             return Response({
-#                 "status": "error",
-#                 "code": "MISSING_DIRECTION_ID",
-#                 "message": "direction_id requis pour le rôle responsable_departement",
-#                 "error_details": "Un responsable département doit être associé à une direction",
-#                 "required_fields": ["user_id", "role", "direction_id"]
-#             }, status=400)
-
-#     # Cas 3: Utilisateur non trouvé
-#     try:
-#         user = User.objects.get(id=user_id)
-#     except User.DoesNotExist:
-#         return Response({
-#             "status": "error",
-#             "code": "USER_NOT_FOUND",
-#             "message": "Utilisateur non trouvé",
-#             "error_details": f"Aucun utilisateur avec l'ID {user_id} n'existe"
-#         }, status=404)
-
-#     # Liste complète des rôles depuis le modèle
-#     valid_roles = [role_code for role_code, _ in User.ROLE_CHOICES]
-    
-#     if role not in valid_roles:
-#         return Response({
-#             "status": "error",
-#             "code": "INVALID_ROLE",
-#             "message": "Rôle invalide",
-#             "error_details": f"Le rôle '{role}' n'est pas reconnu",
-#             "valid_roles": valid_roles,
-#             "valid_roles_display": [display for _, display in User.ROLE_CHOICES],
-#             "suggestion": f"Choisissez parmi: {', '.join(valid_roles)}"
-#         }, status=400)
-
-#     # Sauvegarder l'ancien rôle pour référence
-#     old_role = user.role
-    
-#     # Mettre à jour les champs spécifiques selon le rôle
-#     if role == 'responsable_departement':
-#         user.direction_id = direction_id
-#         user.departement_id = departement_id  # Optionnel
-#         user.activite_id = None
-#     elif role == 'agent':
-#         user.direction_id = None
-#         user.activite_id = None
-#         user.departement_id = None
-#     else:
-#         # Pour les autres rôles (admin, chef, etc.)
-#         user.direction_id = None
-#         user.activite_id = None
-#         user.departement_id = None
-    
-#     # Assigner le nouveau rôle
-#     user.role = role
-#     user.save()
-
-#     # Fonction utilitaire pour formater les infos utilisateur
-#     def format_user_info(user_obj):
-#         return {
-#             "id": user_obj.id,
-#             "nom": user_obj.nom,
-#             "prenom": user_obj.prenom,
-#             "nom_complet": f"{user_obj.prenom} {user_obj.nom}" if user_obj.prenom else user_obj.nom,
-#             "email": user_obj.email,
-#             "role": user_obj.role,
-#             "role_display": dict(User.ROLE_CHOICES).get(user_obj.role, user_obj.role),
-#             "matricule": user_obj.matricule,
-#             "telephone": user_obj.telephone,
-#             "adresse": user_obj.adresse,
-#             "date_naissance": user_obj.date_naissance,
-#             "sexe": user_obj.sexe,
-#             "activite_id": user_obj.activite_id,
-#             "direction_id": user_obj.direction_id,
-#             "departement_id": user_obj.departement_id,
-#             "is_active": user_obj.is_active,
-#             "photo_profil": user_obj.photo_profil.url if user_obj.photo_profil else None,
-#             "date_joined": user_obj.date_joined.isoformat() if hasattr(user_obj, 'date_joined') else None,
-#             "last_login": user_obj.last_login.isoformat() if user_obj.last_login else None
-#         }
-
-
-
-
-#     # Cas spécial: Si on enlève responsable_departement, clear direction_id et departement_id
-#     if old_role == 'responsable_departement' and role != 'responsable_departement':
-#         user.direction_id = None
-#         user.departement_id = None
-#         user.save()
-    
-
-#     # Assignation des autres rôles (admin, chef, directeur, etc.)
-#     return Response({
-#         "status": "success",
-#         "code": "ROLE_ASSIGNED",
-#         "message": f"Rôle {dict(User.ROLE_CHOICES).get(role, role)} attribué à {format_user_info(user)['nom_complet']}",
-#         "data": {
-#             "user": format_user_info(user),
-#             "previous_role": old_role,
-#             "new_role": role,
-#             "new_role_display": dict(User.ROLE_CHOICES).get(role, role),
-#             "assignee": format_user_info(request.user),
-#             "timestamp": datetime.now().isoformat()
-#         }
-#     })
 from datetime import datetime
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -537,15 +398,18 @@ def api_update_user(request, user_id):
     # Liste des modifications effectuées
     modifications = []
     
-    # 🔥 TRAITEMENT DU RÔLE (avec possibilité de null)
+    # 🔥 TRAITEMENT DU RÔLE - CORRECTION ICI
     if 'role' in data:
         role_value = data['role']
+        
+        # Liste des rôles valides depuis le modèle
+        valid_roles = [role[0] for role in User.ROLE_CHOICES]
         
         # Autoriser null, None, ou chaîne vide
         if role_value is None or role_value == '' or (isinstance(role_value, str) and role_value.lower() == 'null'):
             user.role = None
             modifications.append(f"role: {user_before['role']} → null")
-        elif role_value in ['admin', 'agent']:
+        elif role_value in valid_roles:
             user.role = role_value
             modifications.append(f"role: {user_before['role']} → {role_value}")
         else:
@@ -553,12 +417,12 @@ def api_update_user(request, user_id):
                 "status": "error",
                 "code": "INVALID_ROLE",
                 "message": f"Rôle invalide: {role_value}",
-                "valid_roles": ['admin', 'chef', 'agent', 'null'],
-                "suggestion": "Choisissez parmi: admin, chef, agent, ou null"
+                "valid_roles": valid_roles,
+                "suggestion": f"Choisissez parmi: {', '.join(valid_roles)} ou null"
             }, status=400)
 
     # 🔥 TRAITEMENT DES AUTRES CHAMPS
-    fields = ['nom', 'prenom', 'email', 'adresse', 'telephone',  'matricule', 'sexe', 'activite_id']
+    fields = ['nom', 'prenom', 'email', 'adresse', 'telephone', 'matricule', 'sexe', 'activite_id', 'direction_id', 'departement_id']
     
     for field in fields:
         if field in data:
@@ -634,8 +498,8 @@ def api_update_user(request, user_id):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def api_list_users(request):
-    if request.user.role != 'admin':
-        return Response({"status": "error", "message": "Accès admin uniquement"}, status=403)
+    # if request.user.role != 'admin':
+    #     return Response({"status": "error", "message": "Accès admin uniquement"}, status=403)
 
     # Exclure les admins de la liste
     users = User.objects.exclude(role='admin').order_by('nom')
@@ -813,13 +677,13 @@ def api_get_user(request, user_id):
         }, status=404)
 
     # Vérification des droits (admin ou l'utilisateur lui-même)
-    if request.user.role != 'admin' and request.user.id != user.id:
-        return Response({
-            "status": "error",
-            "code": "FORBIDDEN",
-            "message": "Vous n'avez pas accès à ces informations",
-            "details": "Seul l'admin ou l'utilisateur lui-même peut voir ce profil"
-        }, status=403)
+    # if request.user.role != 'admin' and request.user.id != user.id:
+    #     return Response({
+    #         "status": "error",
+    #         "code": "FORBIDDEN",
+    #         "message": "Vous n'avez pas accès à ces informations",
+    #         "details": "Seul l'admin ou l'utilisateur lui-même peut voir ce profil"
+    #     }, status=403)
 
     # Fonction pour formater la date
     def format_date(date_obj):
@@ -958,4 +822,213 @@ def api_me(request):
         'direction_id':    str(user.direction_id)    if user.direction_id    else None,
         'departement_id': str(user.departement_id) if user.departement_id else None,
         'is_active': user.is_active,
+    })
+@api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
+def api_update_user_role(request, user_id):
+    """
+    Endpoint spécifique pour mettre à jour uniquement le rôle d'un utilisateur
+    """
+    # Vérification admin
+    if request.user.role != 'admin':
+        return Response({
+            "status": "error",
+            "code": "FORBIDDEN",
+            "message": "Accès admin uniquement"
+        }, status=403)
+
+    # Récupération de l'utilisateur
+    try:
+        user = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        return Response({
+            "status": "error",
+            "code": "USER_NOT_FOUND",
+            "message": f"Utilisateur avec l'ID {user_id} non trouvé"
+        }, status=404)
+
+    # Récupération du nouveau rôle
+    new_role = request.data.get('role')
+    
+    if new_role is None:
+        return Response({
+            "status": "error",
+            "code": "MISSING_ROLE",
+            "message": "Le champ 'role' est requis"
+        }, status=400)
+
+    # Liste des rôles valides
+    valid_roles = [role[0] for role in User.ROLE_CHOICES]
+    
+    # Vérification si le rôle est valide
+    if new_role not in valid_roles:
+        return Response({
+            "status": "error",
+            "code": "INVALID_ROLE",
+            "message": f"Rôle invalide: {new_role}",
+            "valid_roles": valid_roles,
+            "suggestion": f"Choisissez parmi: {', '.join(valid_roles)}"
+        }, status=400)
+
+    # Sauvegarder l'ancien rôle
+    old_role = user.role
+    
+    # Mettre à jour le rôle
+    user.role = new_role
+    user.save()
+
+    return Response({
+        "status": "success",
+        "code": "ROLE_UPDATED",
+        "message": f"Rôle de {user.prenom} {user.nom} mis à jour avec succès",
+        "data": {
+            "user_id": user.id,
+            "user_name": f"{user.prenom} {user.nom}",
+            "old_role": old_role,
+            "new_role": new_role,
+            "updated_by": {
+                "id": request.user.id,
+                "name": f"{request.user.prenom} {request.user.nom}",
+                "role": request.user.role
+            }
+        }
+    }, status=200)
+# authentification/views.py
+
+# authentification/views.py - Modifier api_update_user_departement
+
+# authentification/api/views.py
+
+@api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
+def api_update_user_departement(request, user_id):
+    """
+    PATCH /auth/users/<user_id>/update-departement/
+    Body: { "departement_id": null, "direction_id": null }
+    
+    Permet de mettre à jour ou supprimer (mettre à null) le département d'un responsable
+    """
+    # Vérifier que l'utilisateur est directeur_direction ou admin
+    if request.user.role not in ['admin', 'directeur_direction']:
+        return Response({
+            "status": "error",
+            "code": "FORBIDDEN",
+            "message": "Seul un admin ou un directeur de direction peut utiliser cet endpoint"
+        }, status=403)
+    
+    # Récupérer l'utilisateur cible
+    try:
+        user = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        return Response({
+            "status": "error",
+            "code": "USER_NOT_FOUND",
+            "message": f"Utilisateur {user_id} non trouvé"
+        }, status=404)
+    
+    # Vérifier que l'utilisateur cible est actif
+    if not user.is_active:
+        return Response({
+            "status": "error",
+            "code": "USER_INACTIVE",
+            "message": "Cet utilisateur est inactif"
+        }, status=400)
+    
+    # Vérifier que l'utilisateur cible a le bon rôle
+    if user.role != 'responsable_departement':
+        return Response({
+            "status": "error",
+            "code": "INVALID_ROLE",
+            "message": f"L'utilisateur doit être 'responsable_departement' (actuel: {user.role})"
+        }, status=400)
+    
+    # Si l'utilisateur a déjà une direction (et que ce n'est pas un admin), vérifier qu'il est dans la même direction
+    if request.user.role == 'directeur_direction' and user.direction_id is not None:
+        if str(user.direction_id) != str(request.user.direction_id):
+            return Response({
+                "status": "error",
+                "code": "FORBIDDEN",
+                "message": "Vous ne pouvez modifier que les utilisateurs de votre direction"
+            }, status=403)
+    
+    # Récupérer les données (peuvent être null)
+    departement_id = request.data.get('departement_id')
+    direction_id = request.data.get('direction_id')
+    
+    # Sauvegarder les anciennes valeurs
+    old_departement_id = user.departement_id
+    old_direction_id = user.direction_id
+    
+    # ✅ Mettre à jour (accepter null)
+    # departement_id peut être une string ou None/null
+    if 'departement_id' in request.data:
+        if departement_id is None or departement_id == '' or departement_id == 'null':
+            user.departement_id = None
+        else:
+            user.departement_id = departement_id
+    
+    # direction_id peut être une string ou None/null
+    if 'direction_id' in request.data:
+        if direction_id is None or direction_id == '' or direction_id == 'null':
+            user.direction_id = None
+        else:
+            user.direction_id = direction_id
+    
+    user.save()
+    
+    # Fonction pour le nom complet
+    def get_nom_complet(u):
+        return f"{u.prenom} {u.nom}".strip()
+    
+    return Response({
+        "status": "success",
+        "code": "DEPARTEMENT_UPDATED",
+        "message": "Département mis à jour avec succès",
+        "data": {
+            "user_id": user.id,
+            "user_name": get_nom_complet(user),
+            "user_role": user.role,
+            "old_departement_id": old_departement_id,
+            "new_departement_id": user.departement_id,
+            "old_direction_id": old_direction_id,
+            "new_direction_id": user.direction_id,
+            "updated_by": {
+                "id": request.user.id,
+                "name": get_nom_complet(request.user),
+                "role": request.user.role
+            },
+            "timestamp": datetime.now().isoformat()
+        }
+    }, status=200)
+# authentification/api/views.py
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def refresh_user_token(request):
+    """
+    POST /auth/refresh-token/
+    Force la création d'un nouveau token avec les données à jour
+    """
+    user = request.user
+    
+    from rest_framework_simplejwt.tokens import RefreshToken
+    
+    refresh = RefreshToken.for_user(user)
+    
+    # Ajouter les informations à jour dans le nouveau token
+    refresh['role'] = user.role
+    refresh['user_id'] = str(user.id)
+    refresh['activite_id'] = str(user.activite_id) if user.activite_id else None
+    refresh['direction_id'] = str(user.direction_id) if user.direction_id else None
+    refresh['departement_id'] = str(user.departement_id) if user.departement_id else None
+    
+    return Response({
+        "status": "success",
+        "refresh": str(refresh),
+        "access": str(refresh.access_token),
+        "user_id": str(user.id),
+        "role": user.role,
+        "direction_id": user.direction_id,
+        "departement_id": user.departement_id,
+        "message": "Token rafraîchi avec succès"
     })
